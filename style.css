@@ -24,3 +24,7 @@ body{
 .nav-pills > li > a {
     color: black;
 }
+
+.jumbotron p {
+  font-size: 12px;
+}
