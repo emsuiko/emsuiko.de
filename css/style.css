@@ -1,0 +1,26 @@
+body{
+   background: url("../images/003-granulated-loom.png") repeat #fff;
+   margin: 50px auto;
+}
+
+a, a:visited, a:active {
+    color: black;
+}
+
+a:hover {
+    color: green;
+}
+
+#picture {
+   width: 250px;
+   height: 250px;
+   border-radius: 125px;
+}
+
+.footer {
+    font-size: 12px;
+}
+
+.row {
+    margin-top: 40px;
+}
