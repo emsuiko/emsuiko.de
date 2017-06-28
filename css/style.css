@@ -15,6 +15,8 @@ a:hover {
    width: 250px;
    height: 250px;
    border-radius: 125px;
+   display: block;
+   margin: 15px auto;
 }
 
 .footer {
@@ -23,4 +25,8 @@ a:hover {
 
 .row {
     margin-top: 40px;
+}
+
+#strava {
+    height: 48px;
 }

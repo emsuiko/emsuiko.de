@@ -1,0 +1,13 @@
+body{
+   background: url("../images/003-granulated-loom.png") repeat #fff;
+   margin: 50px auto;
+}
+
+a {
+    color: #4a4a4a;
+}
+
+a:hover {
+  color: #000;
+  transition: color 0.3s ease-in;
+}
