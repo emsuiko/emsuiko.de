@@ -1,0 +1,37 @@
+@import "settings"
+@import "../../node_modules/foundation-sites/scss/foundation"
+
++foundation-everything(true)
+
+$fa-font-path: "../fonts"
+@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fontawesome"
+@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-regular"
+@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-solid"
+@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-brands"
+
+
+body
+    background: url("../img/003-granulated-loom.png") repeat #fff
+    padding: 5rem
+
+a
+    color: black
+    &:visited, &:active
+        color: black
+    &:hover
+        color: green
+
+#picture
+    width: 250px
+    height: 250px
+    border-radius: 50%
+    display: block
+    margin: 15px auto
+
+.footer
+    font-size: 12px
+
+.links
+    margin: 5rem auto
+    display: flex
+    justify-content: space-between
