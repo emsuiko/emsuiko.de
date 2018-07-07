@@ -7,20 +7,29 @@ html(lang='en')
         title emsuiko.de
         link(rel='stylesheet', type='text/css', href='css/style.css')
     body
-        .container.text-center
-            h1 miko
-            img#picture(src='img/kreis.png', alt='miko')
-            .links
-                a(href='https://instagram.com/denoira/')
-                    i.fab.fa-instagram.fa-3x(aria-hidden='true')
-                a(href='https://github.com/emsuiko')
-                    i.fab.fa-github.fa-3x(aria-hidden='true')
-                a(href='https://codepen.io/emsuiko/')
-                    i.fab.fa-codepen.fa-3x(aria-hidden='true')
-                a(href='https://www.strava.com/athletes/9659091')
-                    i.fab.fa-strava.fa-3x(aria-hidden='true')
-                a(href='http://track-development.de')
-                    i.fa.fa-cogs.fa-3x(aria-hidden='true')
-            .footer
+        .container.text-center.grid-x
+            div.small-12
+                h1 miko
+                img#picture(src='img/me.jpg', alt='miko')
+            .links.small-12.grid-x
+                div.medium-2.small-4
+                    a(href='https://twitter.com/emsuiko/')
+                        i.fab.fa-twitter.fa-3x(aria-hidden='true')
+                div.medium-2.small-4
+                    a(href='https://instagram.com/emsuiko/')
+                        i.fab.fa-instagram.fa-3x(aria-hidden='true')
+                div.medium-2.small-4
+                    a(href='https://github.com/emsuiko')
+                        i.fab.fa-github.fa-3x(aria-hidden='true')
+                div.medium-2.small-4                
+                    a(href='https://codepen.io/emsuiko/')
+                        i.fab.fa-codepen.fa-3x(aria-hidden='true')
+                div.medium-2.small-4
+                    a(href='https://www.strava.com/athletes/9659091')
+                        i.fab.fa-strava.fa-3x(aria-hidden='true')
+                div.medium-2.small-4
+                    a(href='https://track-development.de')
+                        i.fa.fa-cogs.fa-3x(aria-hidden='true')
+            .footer.small-12
                 a(href='impressum.html') Impressum &amp; Datenschutzerklärung
         script(src='js/app.js')
