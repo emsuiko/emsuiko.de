@@ -1,14 +1,19 @@
 var gulp = require('gulp');
-var log = require('fancy-log');
-var beeper = require('beeper');
 var $ = require('gulp-load-plugins')();
+
+var log = require('fancy-log');
+
 var browserSync = require('browser-sync').create();
 
 var autoprefixer = require('autoprefixer');
 var cssnano = require('cssnano');
 var del = require('del');
-var watch = require('gulp-watch');
-var plumber = require('gulp-plumber');
+
+var uglify = require('gulp-uglify-es').default;
+// * * * BROWSERIFY
+var browserify = require('browserify');
+var source = require("vinyl-source-stream");
+var buffer = require("vinyl-buffer");
 
 var env = require('minimist')(process.argv.slice(2))._[0] || 'development';
 
@@ -24,7 +29,7 @@ var sassFilter = function(file) {
 };
 
 function onError(err) {
-    beeper();
+    require('beeper')();
     log.error(err);
 }
 
@@ -59,14 +64,21 @@ function templates(filestream, destination) {
         .pipe(gulp.dest('dist'+destination))
 }
 
-function script(filestream) {
-    return filestream
-        .pipe($.browserify({
-            insertGlobals: true,
-            debug: isDevelopment()
-        }))
-        .pipe($.uglify())
-        .pipe(gulp.dest('dist/js'));
+function script(filename) {
+    return browserify({
+        entries: 'src/js/'+filename,
+        debug: isDevelopment()
+      })
+      .bundle()
+      .on('error', err => {
+        log.error("Browserify Error: "+err.message);
+      })
+      .pipe(source(filename))
+      .pipe(buffer())
+      .pipe($.if(isProduction(), uglify()))
+      .pipe($.sourcemaps.init({loadMaps: true}))
+      .pipe($.sourcemaps.write('./maps'))
+      .pipe(gulp.dest('../public/js'));
 }
 
 function fontawesome() {
@@ -82,7 +94,7 @@ function fontawesome() {
 // * * * * * TASKS * * * * * //
 
 gulp.task('templates', function() {
-    return templates(gulp.src('src/pug/*.pug'),'');
+    return templates(gulp.src('src/pug/**/*.pug'),'');
 });
 
 gulp.task('sass', function() {
@@ -90,7 +102,7 @@ gulp.task('sass', function() {
 });
 
 gulp.task('js', function() {
-    return script(gulp.src('src/js/app.js'));
+    return script('app.js');
 });
 
 gulp.task('fonts', function() {
@@ -107,7 +119,7 @@ gulp.task('stuff', function() {
 });
 
 gulp.task('favicon', function() {
-    return gulp.src('favicon.ico')
+    return gulp.src('src/favicon.ico')
         .pipe(gulp.dest('dist'))
 });
 
@@ -118,12 +130,20 @@ gulp.task('clean', function() {
     ]);
 });
 
-gulp.task('build', ['templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'stuff']);
+gulp.task('browserSync', function() {
+    browserSync.init({
+      server: {
+        baseDir: 'dist'
+      },
+    })
+});
 
-gulp.task('watch', ['templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'browserSync', 'stuff'], function() {
+gulp.task('build', gulp.series('clean', gulp.parallel('templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'stuff')), () => {});
+
+gulp.task('watch', gulp.series(gulp.parallel('templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'browserSync', 'stuff'), function watch () {
     log('Start watching...');
 
-    watch('src/*.*', function(vinyl) {
+    $.watch('src/*.*', function(vinyl) {
         var filename = vinyl.path.replace(vinyl.cwd + '/', '');
         var dest = vinyl.dirname.replace(vinyl.base, '');
 
@@ -140,7 +160,7 @@ gulp.task('watch', ['templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'brows
         }
     });
 
-    watch('src/images/**/*.*', { verbose: true }, function(vinyl) {
+    $.watch('src/images/**/*.*', { verbose: true }, function(vinyl) {
         var filename = vinyl.path.replace(vinyl.cwd + '/', '');
         var dest = vinyl.dirname.replace(vinyl.base, '');
 
@@ -157,33 +177,33 @@ gulp.task('watch', ['templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'brows
         }
     });
 
-    watch('src/pug/**/*.pug', { verbose: true }, function(vinyl) {
+    $.watch('src/pug/**/*.pug', { verbose: true }, function(vinyl) {
         var filename = vinyl.path.replace(vinyl.cwd + '/', '');
         var dest = vinyl.dirname.replace(vinyl.base, '');
-        templates(gulp.src(['src/pug/*.pug'])
-                .pipe(plumber({ errorHandler: onError })),'')
+        templates(gulp.src(filename)
+                .pipe($.plumber({ errorHandler: onError })),'')
             .on('end', function() {
                 log('...re-pugged');
             });
     });
 
-    watch('src/sass/**/*.sass', { verbose: true }, function(vinyl) {
+    $.watch('src/sass/**/*.sass', { verbose: true }, function(vinyl) {
         var filename = vinyl.path.replace(vinyl.cwd + '/', '');
         sass(gulp.src([filename], { base: 'src/sass/' })
-                .pipe(plumber({ errorHandler: onError })))
+                .pipe($.plumber({ errorHandler: onError })))
             .on('end', function() {
                 log('...re-sassed');
             });
     });
 
-    watch('src/js/**/*.js', { verbose: true }, function(vinyl) {
-        script(gulp.src('src/js/app.js').pipe(plumber({ errorHandler: onError })))
+    $.watch('src/js/**/*.js', { verbose: true }, function(vinyl) {
+        script('app.js').pipe($.plumber({ errorHandler: onError }))
             .on('end', function() {
                 log('...re-scripted');
             });
     });
 
-    watch('src/fonts/**/*.*', { verbose: true }, function(vinyl) {
+    $.watch('src/fonts/**/*.*', { verbose: true }, function(vinyl) {
         var filename = vinyl.path.replace(vinyl.cwd + '/', '');
         var dest = vinyl.dirname.replace(vinyl.base, '');
         fonts(filename, dest)
@@ -191,17 +211,8 @@ gulp.task('watch', ['templates', 'sass', 'js', 'fonts', 'img', 'favicon', 'brows
                 log('...re-fonted');
             });
     });
-});
+}));
 
-gulp.task('browserSync', function() {
-  browserSync.init({
-    server: {
-      baseDir: 'dist'
-    },
-  })
-});
-
-gulp.task('default', ['clean'], function() {
-    log('Start build for ' + env);
-    gulp.start('watch');
+gulp.task('default', gulp.series('clean', 'watch'), function() {
+    log('Start build for '+env);
 });
