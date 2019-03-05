@@ -1,20 +1,14 @@
-@import "settings"
-@import "../../node_modules/foundation-sites/scss/foundation"
-
-+foundation-global-styles;
-+foundation-forms;
-+foundation-typography;
-+foundation-xy-grid-classes
-
 $fa-font-path: "../fonts"
-@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fontawesome"
-@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-regular"
-@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-solid"
-@import "../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-brands"
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome"
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/regular"
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/solid"
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/brands"
 
 
 body
     padding: 5rem 1rem
+    text-align: center
+    font-family: sans-serif
 
 a
     color: black
@@ -37,6 +31,6 @@ a
 .links
     margin: 5rem auto
     display: flex
-    justify-content: space-between
+    justify-content: space-evenly
     > div
         margin: .5rem 0

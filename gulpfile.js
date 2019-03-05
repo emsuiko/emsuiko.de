@@ -78,11 +78,11 @@ function script(filename) {
       .pipe($.if(isProduction(), uglify()))
       .pipe($.sourcemaps.init({loadMaps: true}))
       .pipe($.sourcemaps.write('./maps'))
-      .pipe(gulp.dest('../public/js'));
+      .pipe(gulp.dest('../dist/js'));
 }
 
 function fontawesome() {
-    return gulp.src('node_modules/@fortawesome/fontawesome-free-webfonts/webfonts/*')
+    return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/*')
         .pipe(gulp.dest('dist/fonts'));
 }
 

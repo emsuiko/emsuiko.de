@@ -1,9 +1,0 @@
-global.$ = global.jQuery = require('jquery');
-require('what-input');
-require('foundation-sites');
-
-$(document).foundation();
-
-$(document).ready(function() {
-});
-
